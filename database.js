@@ -20,4 +20,3 @@ database
     });
 
 module.exports = database
-
