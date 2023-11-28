@@ -1,30 +1,4 @@
 const database = require("../../database")
-const movies = [
-  {
-    id: 1,
-    title: "Citizen Kane",
-    director: "Orson Wells",
-    year: "1941",
-    color: false,
-    duration: 120,
-  },
-  {
-    id: 2,
-    title: "The Godfather",
-    director: "Francis Ford Coppola",
-    year: "1972",
-    color: true,
-    duration: 180,
-  },
-  {
-    id: 3,
-    title: "Pulp Fiction",
-    director: "Quentin Tarantino",
-    year: "1994",
-    color: true,
-    duration: 180,
-  },
-];
 
 const getMovies = (req, res) => {
   database
@@ -103,7 +77,5 @@ const postMovie = (req, res) => {
 module.exports = {
   getMovies,
   getMovieById,
-  getUsers,
-  getUserById,
   postMovie,
 };
