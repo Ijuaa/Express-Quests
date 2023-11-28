@@ -36,7 +36,7 @@ const postMovie = (req, res) => {
   database
     .query("INSERT INTO movies(title, director, year, color, duration) VALUES (?, ?, ?, ?, ?)", [title, director, year, color, duration])
     .then(([result]) => {
-      console.log(result.insertID)
+      res.status(201).send({ id: result.insertId });
     })
     .catch((err) => {
       console.error(err)
