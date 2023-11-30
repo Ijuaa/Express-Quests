@@ -155,3 +155,30 @@ describe("PUT /api/movies/:id", () => {
     expect(response.status).toEqual(404);
   });
 });
+
+describe("DELETE /api/movies/:id", () => {
+  let id;
+
+  it("should create then delete a movie", async () => {
+    const newMovie = {
+      title: "la poupée qui tousse",
+      director: "Michelle Obama",
+      year: "1980",
+      color: "0",
+      duration: 2,
+    };
+    const [result] = await database.query(
+      "INSERT INTO movies(title, director, year, color, duration) VALUES (?, ?, ?, ?, ?)",
+      [newMovie.title, newMovie.director, newMovie.year, newMovie.color, newMovie.duration]
+    );
+    id = result.insertId;
+
+    const response = await request(app).delete(`/api/movies/${id}`);
+    expect(response.status).toEqual(204);
+  });
+
+  it("should return no movie", async () => {
+    const response = await request(app).get(`/api/movies/${id}`);
+    expect(response.status).toEqual(404);
+  });
+});
