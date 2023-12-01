@@ -1,16 +1,33 @@
 const database = require("../../database")
 
 const getUsers = (req, res) => {
+    let sql = "select * from users ";
+    const sqlValues = [];
+
+    if (req.query.language != null) {
+        sql += "WHERE language = ?";
+        sqlValues.push(req.query.language);
+
+        if (req.query.city != null) {
+            sql += "AND city = ?";
+            sqlValues.push(req.query.city)
+        }
+    } else if (req.query.city != null) {
+        sql += "WHERE city = ?";
+        sqlValues.push(req.query.city)
+    }
+
     database
-        .query("select * from users")
+        .query(sql, sqlValues)
         .then(([users]) => {
-            res.status(200).json(users)
+            res.json(users);
         })
-        .catch(err => {
-            console.error(err)
-            res.sendStatus(500)
-        })
-}
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send("Error retrieving data from database");
+        });
+};
+
 
 const getUserById = (req, res) => {
     const id = parseInt(req.params.id)
@@ -49,40 +66,40 @@ const updateUser = (req, res) => {
     const { firstname, lastname, email, city, language } = req.body;
 
     database
-    .query(
-        "update users set firstname = ?, lastname = ?, email = ?, city = ?, language = ? WHERE id = ?",
-        [firstname, lastname, email, city, language, id]
-    )
-    .then(([result]) => {
-        if (result.affectedRows === 0) {
-            res.sendStatus(404)
-        } else {
-            res.sendStatus(204)
-        }
-    })
-    .catch((err) => {
-        console.error(err)
-        res.sendStatus(500)
-    });
+        .query(
+            "update users set firstname = ?, lastname = ?, email = ?, city = ?, language = ? WHERE id = ?",
+            [firstname, lastname, email, city, language, id]
+        )
+        .then(([result]) => {
+            if (result.affectedRows === 0) {
+                res.sendStatus(404)
+            } else {
+                res.sendStatus(204)
+            }
+        })
+        .catch((err) => {
+            console.error(err)
+            res.sendStatus(500)
+        });
 }
 
 const deleteUser = (req, res) => {
     const id = parseInt(req.params.id);
-  
+
     database
-    .query("DELETE FROM users WHERE id = ?", [id])
-    .then(([result]) => {
-      if (result.affectedRows === 0) {
-        res.sendStatus(404);
-      } else {
-        res.sendStatus(204);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
-    });
-  };
+        .query("DELETE FROM users WHERE id = ?", [id])
+        .then(([result]) => {
+            if (result.affectedRows === 0) {
+                res.sendStatus(404);
+            } else {
+                res.sendStatus(204);
+            }
+        })
+        .catch((err) => {
+            console.error(err);
+            res.sendStatus(500);
+        });
+};
 
 module.exports = {
     getUsers,
